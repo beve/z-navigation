@@ -24,15 +24,14 @@ const AnimationCanvas = () => {
 
     <Canvas
       style={{ backgroundColor: canvasColor }}
-      // shadowMap
+      shadowMap
       camera={{ near: 1, far: 20, position: [0, 0, 8] }}
       onWheel={onWheel}
-      // onTouchMove={onMove}
+      onTouchMove={onMove}
       onMouseMove={onMove}
       onPointerMissed={onPointerMissed}>
-      <AnimationContext>
-        <Scene mouse={mouse} zoomPos={zoomPos} />
-        <Controls clickOutside={clickOutside} />
+      <AnimationContext controls={<Controls clickOutside={clickOutside} mouse={mouse} zoomPos={zoomPos} />}>
+        <Scene />
       </AnimationContext>
     </Canvas >
   )
