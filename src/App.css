@@ -1,4 +1,10 @@
-body, canvas {
+body {
+  width: 100vw;
+  height: 100vh;
+}
+
+canvas {
+  /* cursor: none; */
   width: 100vw;
   height: 100vh;
 }

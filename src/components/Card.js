@@ -1,10 +1,11 @@
-import React, { useRef, useState, useMemo } from 'react'
-import { useThree, useFrame, Dom } from 'react-three-fiber'
+import React, { useContext, useRef, useState, useMemo } from 'react'
+import { useThree, useFrame } from 'react-three-fiber'
 import lerp from 'lerp'
 import * as THREE from 'three'
 import Text from './Text'
+import { DispatchContext } from './AnimationContext'
 
-const Card = ({ position, video, image, label, urlG }) => {
+const Card = ({ position, video, image, label, url }) => {
 
   const mesh = useRef()
   const material = useRef()
@@ -13,6 +14,8 @@ const Card = ({ position, video, image, label, urlG }) => {
   const [hovered, setHovered] = useState(false)
   const [clicked, setClicked] = useState(false)
   const [displayed, setDisplayed] = useState(false)
+
+  const dispatch = useContext(DispatchContext)
 
   // const videoUrl = (video) ? `/assets/${video}.mp4` : null
 
@@ -46,6 +49,7 @@ const Card = ({ position, video, image, label, urlG }) => {
         camera.position.z = lerp(camera.position.z, mesh.current.position.z, 0.07)
       } else {
         setDisplayed(true)
+        dispatch({ type: 'select', value: mesh })
         setClicked(false)
       }
     } else if (clicked && displayed) {

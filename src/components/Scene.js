@@ -1,27 +1,29 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { useFrame } from 'react-three-fiber'
 import lerp from 'lerp'
 import Card from './Card'
 import Text from './Text'
+import { StateContext } from './AnimationContext'
 
 function Scene({ mouse, zoomPos }) {
 
-  useFrame(({ camera }) => {
-    // camera.position.x = mouse.current[0] * 0.001
-    // camera.position.y = mouse.current[1] * 0.001
+  const state = useContext(StateContext)
 
+  useFrame(({ camera }) => {
     const x = (1 - mouse.current[0]) * 0.0005;
     const y = (1 - mouse.current[1]) * 0.0005;
 
     camera.rotation.x += 0.05 * (y - camera.rotation.x);
     camera.rotation.y += 0.05 * (x - camera.rotation.y);
-    camera.position.z = lerp(camera.position.z, camera.position.z + zoomPos.current, 0.001)
+    if (!state.card) {
+      camera.position.z = lerp(camera.position.z, camera.position.z + zoomPos.current, 0.001)
+    }
   })
 
   const items = [{
     type: 'text',
     props: {
-      color: "gray",
+      color: 'gray',
       size: 1,
       letterSpacing: 0.2,
       position: [0, 0, 0],
@@ -63,7 +65,9 @@ function Scene({ mouse, zoomPos }) {
 
   return (
     <>
-      {items.map(item=> {
+      <ambientLight />
+      <fog attach="fog" args={['blue', 10, 15]} />
+      {items.map(item => {
         return (item.type === 'text') ?
           <Text key={item.props.position} {...item.props} />
           :
