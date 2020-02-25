@@ -49,8 +49,8 @@ const Card = ({ position, video, image, label, url }) => {
         camera.position.z = lerp(camera.position.z, mesh.current.position.z, 0.07)
       } else {
         setDisplayed(true)
-        dispatch({ type: 'select', value: mesh })
         setClicked(false)
+        dispatch({ type: 'select', value: mesh })
       }
     } else if (clicked && displayed) {
       if (Math.abs(camera.position.x) >= 0.01 || Math.abs(camera.position.y) >= 0.01) {
@@ -60,6 +60,7 @@ const Card = ({ position, video, image, label, url }) => {
       } else {
         setDisplayed(false)
         setClicked(false)
+        dispatch({ type: 'select', value: null })
       }
     }
   })

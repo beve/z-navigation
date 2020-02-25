@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import React, { useContext, useEffect } from 'react'
 import { useFrame } from 'react-three-fiber'
 import lerp from 'lerp'
 import Card from './Card'
@@ -19,6 +19,12 @@ function Scene({ mouse, zoomPos }) {
       camera.position.z = lerp(camera.position.z, camera.position.z + zoomPos.current, 0.001)
     }
   })
+
+  useEffect(() => {
+    if (state.card) {
+      zoomPos.current = 0;
+    }
+  }, [state.card]);
 
   const items = [{
     type: 'text',
