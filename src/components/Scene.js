@@ -17,7 +17,7 @@ function Scene() {
   return (
     <>
       <ambientLight />
-      <fog attach="fog" args={['blue', 10, 15]} />
+      <fog attach="fog" args={['#5AA8CC', 10, 15]} />
       {[components]}
     </>
   )

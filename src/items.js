@@ -2,7 +2,7 @@ const items = [
   {
     type: 'text',
     props: {
-      color: 'gray',
+      color: '#FF8A99',
       size: 1,
       letterSpacing: 0.2,
       position: [0, 0, 0],
@@ -21,28 +21,28 @@ const items = [
     type: 'card',
     props: {
       position: [-1.5, 2, -6],
-      image: '/assets/image1.jpg',
+      image: 'https://hub.packtpub.com/wp-content/uploads/2018/06/virtual-reality.jpg',
     }
   },
   {
     type: 'card',
     props: {
       position: [3, 1.5, -7],
-      video: 'video1',
-      label: 'Virtual reality'
+      video: 'video2',
+      label: ''
     }
   },
   {
     type: 'card',
     props: {
       position: [3, -2.5, -8],
-      image: '/assets/image1.jpg',
+      image: 'https://miro.medium.com/max/1920/1*hWFmSw7JLyKJNpjbEzQgMA.jpeg',
     }
   },
   {
     type: 'text',
     props: {
-      color: 'pink',
+      color: '#FF8A99',
       size: 1,
       letterSpacing: 0.2,
       position: [0, 0, -14],

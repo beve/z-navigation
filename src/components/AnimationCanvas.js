@@ -10,8 +10,6 @@ const AnimationCanvas = () => {
   const zoomPos = useRef(0)
   const clickOutside = useRef(false)
 
-  const [canvasColor, setCanvasColor] = useState('blue')
-
   const onMove = useCallback(({ clientX: x, clientY: y }) => (mouse.current = [x - window.innerWidth / 2, y - window.innerHeight / 2]), [])
 
   const onWheel = useCallback((e) => (zoomPos.current = (e.deltaY > 0) ? zoomPos.current + 20 : zoomPos.current - 20), [])
@@ -23,9 +21,9 @@ const AnimationCanvas = () => {
   return (
 
     <Canvas
-      style={{ backgroundColor: canvasColor }}
+      style={{ backgroundColor: '#5AA8CC' }}
       shadowMap
-      camera={{ near: 1, far: 20, position: [0, 0, 8] }}
+      camera={{ near: 1, far: 20, position: [0, 0, 5] }}
       onWheel={onWheel}
       onTouchMove={onMove}
       onMouseMove={onMove}

@@ -16,11 +16,12 @@ const Card = ({ position, video, image, label, url }) => {
 
   const hovered = useRef(false)
   const clicked = useRef(false)
+  let vid;
 
   if (video) {
-    const vid = document.getElementById(video);
+    vid = document.getElementById(video);
+      vid.play();
     vidTexture.current = new THREE.VideoTexture(vid)
-    vid.play();
   }
 
   useFrame(() => {
@@ -35,7 +36,7 @@ const Card = ({ position, video, image, label, url }) => {
   const onOut = () => {
     hovered.current = false;
     if (!clicked.current) {
-      mesh.current.material.color = new THREE.Color('blue')
+      mesh.current.material.color = new THREE.Color('#5796B3')
     }
   }
 
@@ -43,6 +44,13 @@ const Card = ({ position, video, image, label, url }) => {
     mesh.current.material.color = new THREE.Color('white')
     e.stopPropagation();
     clicked.current = !clicked.current;
+    if (video) {
+      if (clicked.current) {
+        vid.play();
+      } else {
+        vid.pause()
+      }
+    }
     dispatch({ type: 'select', value: (clicked.current) ? mesh : null })
   }
 
@@ -51,7 +59,7 @@ const Card = ({ position, video, image, label, url }) => {
     <>
       <mesh ref={mesh} position={position} onPointerOver={onHover} onPointerOut={onOut} onClick={onClick}>
         <planeBufferGeometry attach="geometry" args={[2, 1.4]} />
-        <meshLambertMaterial opacity={0.7} transparent attach="material" ref={material} color={"blue"}>
+        <meshLambertMaterial opacity={0.7} transparent attach="material" ref={material} color={"5796B3"}>
           {vidTexture.current && <primitive attach="map" object={vidTexture.current} />}
           {imgTexture && <primitive attach="map" object={imgTexture} />}
         </meshLambertMaterial>
