@@ -8,6 +8,8 @@ const AnimationCanvas = () => {
 
   const mouse = useRef([0, 0])
   const zoomPos = useRef(0)
+  const clickOutside = useRef(false)
+
   const [canvasColor, setCanvasColor] = useState('blue')
 
   const onMove = useCallback(({ clientX: x, clientY: y }) => (mouse.current = [x - window.innerWidth / 2, y - window.innerHeight / 2]), [])
@@ -15,6 +17,7 @@ const AnimationCanvas = () => {
   const onWheel = useCallback((e) => (zoomPos.current = (e.deltaY > 0) ? zoomPos.current + 20 : zoomPos.current - 20), [])
 
   const onPointerMissed = () => {
+    clickOutside.current = true;
   }
 
   return (
@@ -29,7 +32,7 @@ const AnimationCanvas = () => {
       onPointerMissed={onPointerMissed}>
       <AnimationContext>
         <Scene mouse={mouse} zoomPos={zoomPos} />
-        <Controls />
+        <Controls clickOutside={clickOutside} />
       </AnimationContext>
     </Canvas >
   )

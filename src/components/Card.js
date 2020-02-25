@@ -10,10 +10,17 @@ const Card = ({ position, video, image, label, url }) => {
   const mesh = useRef()
   const material = useRef()
 
-  const { camera } = useThree()
-  const [hovered, setHovered] = useState(false)
-  const [clicked, setClicked] = useState(false)
-  const [displayed, setDisplayed] = useState(false)
+  console.log('RENDER CARD')
+
+
+
+  // const [hovered, setHovered] = useState(false)
+  // const [clicked, setClicked] = useState(false)
+  // const [displayed, setDisplayed] = useState(false)
+
+  const hovered = useRef(false)
+
+  const clicked = useRef(false)
 
   const dispatch = useContext(DispatchContext)
 
@@ -30,56 +37,24 @@ const Card = ({ position, video, image, label, url }) => {
     vid.play();
   }
 
-  // useEffect(() => {
-  //   if (videoRef.current) {
-  //     vidTexture.current = new THREE.VideoTexture(videoRef.current)
-  //     videoRef.current.play()
-  //   }
-  // }, [])
-
   useFrame(() => {
-    mesh.current.material.opacity = lerp(mesh.current.material.opacity, hovered ? 1 : 0.7, 0.1)
-    if (clicked && !displayed) {
-      const currentX = Math.abs(camera.position.x - mesh.current.position.x);
-      const currentY = Math.abs(camera.position.y - mesh.current.position.y);
-      const currentZ = Math.abs(camera.position.z - mesh.current.position.z);
-      if (currentX >= 0.1 || currentY >= 0.1 || currentZ >= 1.7) {
-        camera.position.x = lerp(camera.position.x, mesh.current.position.x, 0.2);
-        camera.position.y = lerp(camera.position.y, mesh.current.position.y, 0.2);
-        camera.position.z = lerp(camera.position.z, mesh.current.position.z, 0.07)
-      } else {
-        setDisplayed(true)
-        setClicked(false)
-        dispatch({ type: 'select', value: mesh })
-      }
-    } else if (clicked && displayed) {
-      if (Math.abs(camera.position.x) >= 0.01 || Math.abs(camera.position.y) >= 0.01) {
-        camera.position.x = lerp(camera.position.x, 0, 0.1);
-        camera.position.y = lerp(camera.position.y, 0, 0.1);
-        camera.position.z = lerp(camera.position.z, 0, 0.1)
-      } else {
-        setDisplayed(false)
-        setClicked(false)
-        dispatch({ type: 'select', value: null })
-      }
-    }
+    mesh.current.material.opacity = lerp(mesh.current.material.opacity, hovered.current ? 1 : 0.7, 0.1)
   })
 
   const onHover = () => {
-    setHovered(true)
-    // mesh.current.material.transparent = false
+    hovered.current = true;
   }
 
   const onOut = () => {
-    // mesh.current.material.opacity = lerp(mesh.current.material.opacity, 0.7, 0.1)
-    setHovered(false)
-    // mesh.current.material.transparent = true
+    hovered.current = false;
   }
 
   const onClick = (e) => {
     e.stopPropagation();
-    setClicked(!clicked)
-    setDisplayed(!(!displayed && !clicked))
+    // setClicked(!clicked)
+    clicked.current = !clicked.current;
+    dispatch({ type: 'select', value: (clicked.current) ? mesh : null })
+    // // setDisplayed(!(!displayed && !clicked))
   }
 
 
