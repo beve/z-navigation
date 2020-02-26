@@ -18,8 +18,9 @@ const Controls = ({ mouse, zoomPos, clickOutside }) => {
       clickOutside.current = false;
       if (state.card) {
         dispatch({ type: 'select', value: null })
-        zoomPos.current = 0
       }
+      // Stop zoom
+      zoomPos.current = 0
     }
   })
 
