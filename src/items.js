@@ -21,7 +21,7 @@ const items = [
     type: 'card',
     props: {
       position: [-1.5, 2, -6],
-      image: 'https://hub.packtpub.com/wp-content/uploads/2018/06/virtual-reality.jpg',
+      image: 'https://media.istockphoto.com/photos/virtual-reality-engineer-works-with-vr-glasses-on-while-doing-on-picture-id870233698',
     }
   },
   {
