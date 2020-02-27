@@ -1,10 +1,9 @@
 body {
-  width: 100vw;
-  height: 100vh;
 }
 
 canvas {
   /* cursor: none; */
+  display: block;
   width: 100vw;
   height: 100vh;
 }

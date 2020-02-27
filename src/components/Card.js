@@ -5,7 +5,7 @@ import * as THREE from 'three'
 import Text from './Text'
 import { DispatchContext } from './AnimationContext'
 
-const Card = ({ position, video, image, label, url }) => {
+const Card = ({ color, position, video, image, label, url }) => {
 
   const dispatch = useContext(DispatchContext)
 
@@ -36,7 +36,7 @@ const Card = ({ position, video, image, label, url }) => {
   const onOut = () => {
     hovered.current = false;
     if (!clicked.current) {
-      mesh.current.material.color = new THREE.Color('#5796B3')
+      mesh.current.material.color = new THREE.Color(color)
     }
   }
 
@@ -59,7 +59,7 @@ const Card = ({ position, video, image, label, url }) => {
     <>
       <mesh ref={mesh} position={position} onPointerOver={onHover} onPointerOut={onOut} onClick={onClick}>
         <planeBufferGeometry attach="geometry" args={[2, 1.4]} />
-        <meshLambertMaterial opacity={0.7} transparent attach="material" ref={material} color={"5796B3"}>
+        <meshLambertMaterial opacity={0.7} transparent attach="material" ref={material} color={color}>
           {vidTexture.current && <primitive attach="map" object={vidTexture.current} />}
           {imgTexture && <primitive attach="map" object={imgTexture} />}
         </meshLambertMaterial>

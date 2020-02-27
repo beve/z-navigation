@@ -1,4 +1,4 @@
-import React, { useCallback, useRef, useState } from 'react'
+import React, { useCallback, useRef } from 'react'
 import { Canvas } from 'react-three-fiber'
 import Scene from './Scene'
 import AnimationContext from './AnimationContext'
@@ -21,8 +21,6 @@ const AnimationCanvas = () => {
   return (
 
     <Canvas
-      style={{ backgroundColor: '#5AA8CC' }}
-      shadowMap
       camera={{ near: 1, far: 20, position: [0, 0, 5] }}
       onWheel={onWheel}
       onTouchMove={onMove}
