@@ -61,8 +61,7 @@ const Scene = () => {
               color
             />
           );
-          cardNum += 1;
-          z -= (cardNum === group.children.length - 1) ? 7 : 1;
+          z -= (++cardNum === group.children.length - 1) ? 12 : 1;
           return c;
       }
     });

@@ -43,9 +43,9 @@ const groups = [
     ]
   },
   {
-    color: "blue",
-    backgroundColor: "green",
-    textColor: "yellow",
+    color: "#9BFF99",
+    backgroundColor: "#8BDEE8",
+    textColor: "#E2FF99",
     children: [
       {
         type: "text",
