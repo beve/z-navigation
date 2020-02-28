@@ -2,7 +2,10 @@ import React, { createContext, useReducer } from 'react'
 
 const initialState = {
   card: null,
-  zoomEnabled: true
+  minZ: 0,
+  maxZ: 8,
+  maxVelocity: 0.3,
+  zoomEnabled: true,
 }
 
 const reducer = (state, { type, value }) => {
@@ -11,6 +14,8 @@ const reducer = (state, { type, value }) => {
       return { ...state, card: value }
     case "zoomEnabled":
       return { ...state, zoomEnabled: value }
+    case "setMinZ":
+      return { ...state, minZ: value }
     default:
       return Error('Error updating state')
   }

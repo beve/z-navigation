@@ -91,6 +91,21 @@ const groups = [
         }
       }
     ]
+  },
+  {
+    color: "#5796B3",
+    backgroundColor: "#5AA8CC",
+    textColor: "#FF8A99",
+    children: [
+      {
+        type: "text",
+        props: {
+          size: 1,
+          letterSpacing: 0.2,
+          children: "À vous !"
+        }
+      },
+    ]
   }
 ];
 

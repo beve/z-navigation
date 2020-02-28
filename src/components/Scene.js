@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useContext } from "react"
 import Card from "./Card"
 import Text from "./Text"
 import * as THREE from 'three'
@@ -10,6 +10,7 @@ import {
 } from "react-spring/three";
 import { useFrame } from "react-three-fiber"
 import groups from "../groups"
+import { DispatchContext } from './AnimationContext'
 
 const ambiances = [];
 const xPos = [-2, -1.5, 3, 3];
@@ -19,8 +20,10 @@ const Scene = () => {
 
   let fogColor = '#fff';
 
+  const dispatch = useContext(DispatchContext)
+
   useFrame(({ scene, camera }) => {
-    if (ambiances.length === 0 ) return;
+    if (ambiances.length === 0) return;
     ambiances.forEach(amb => {
       if (Math.round(camera.position.z <= amb.z + 13)) {
         const c = new THREE.Color(amb.backgroundColor)
@@ -67,6 +70,8 @@ const Scene = () => {
     });
     return tmp;
   });
+
+  dispatch({ type: 'setMinZ', value: z + 10})
 
   return (
     <>

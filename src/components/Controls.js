@@ -5,14 +5,11 @@ import { useEffect } from 'react'
 import * as THREE from 'three'
 import lerp from 'lerp'
 
-const MIN_ZOOM = 8;
-
 const Controls = ({ mouse, zoomPos, clickOutside }) => {
 
   const state = useContext(StateContext)
   const dispatch = useContext(DispatchContext)
-  const lastZoomValue = useRef(MIN_ZOOM)
-  const MAX_VELOCITY = 0.3;
+  const lastZoomValue = useRef(state.maxZ)
 
   // Handle click outside a card
   useFrame(() => {
@@ -60,26 +57,28 @@ const Controls = ({ mouse, zoomPos, clickOutside }) => {
     camera.rotation.y += 0.05 * (x - camera.rotation.y);
 
     // Check if we authorize zoom
-    const process = state.zoomEnabled && !(isZoomOut && camera.position.z >= MIN_ZOOM)
+    const process = state.zoomEnabled && !(isZoomOut && camera.position.z >= state.maxZ) && !(isZoomIn && camera.position.z <= state.minZ)
 
     if (!state.card && process) {
 
       let maxVelocity;
+      const currentZoomPos = zoomPos.current;
       if (isZoomIn) {
-        maxVelocity = -MAX_VELOCITY; 
+        maxVelocity = -state.maxVelocity; 
       } else {
-        maxVelocity = MAX_VELOCITY; 
+        maxVelocity = state.maxVelocity; 
       }
       // camera.position.z = lerp(camera.position.z, (camera.position.z + zoomPos.current * 0.8) , 0.001)
-      const newVelocity = (zoomPos.current * 0.1);
-      const velocity = (Math.abs(newVelocity) >= MAX_VELOCITY) ? maxVelocity : newVelocity;
-      console.log(newVelocity, velocity)
+      const newVelocity = (currentZoomPos * 0.1);
+      const velocity = (Math.abs(newVelocity) >= state.maxVelocity) ? maxVelocity : newVelocity;
       camera.position.z = camera.position.z + velocity
     }
 
-    //  ZoomOut prohibited, decrement zoom position to match world view
+    //  ZoomIn or ZoomOut prohibited, adapt zoom position to match world view
     if (!process && isZoomOut) {
       zoomPos.current -= 1;
+    } else if (!process && isZoomIn) {
+      zoomPos.current += 1;
     }
 
   })

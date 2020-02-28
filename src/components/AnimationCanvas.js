@@ -12,7 +12,10 @@ const AnimationCanvas = () => {
 
   const onMove = useCallback(({ clientX: x, clientY: y }) => (mouse.current = [x - window.innerWidth / 2, y - window.innerHeight / 2]), [])
 
-  const onWheel = useCallback((e) => (zoomPos.current = (e.deltaY > 0) ? zoomPos.current + 1 : zoomPos.current - 1), [])
+  const onWheel = useCallback((e) => {
+    return (
+    zoomPos.current = (e.deltaY > 0) ? zoomPos.current + 1 : zoomPos.current - 1
+  )}, [])
 
   const onPointerMissed = () => {
     clickOutside.current = true;
