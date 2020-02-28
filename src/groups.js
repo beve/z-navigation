@@ -39,7 +39,14 @@ const groups = [
           image:
             "https://miro.medium.com/max/1920/1*hWFmSw7JLyKJNpjbEzQgMA.jpeg"
         }
-      }
+      },
+      {
+        type: "card",
+        props: {
+          image:
+            "https://image.shutterstock.com/image-photo/factory-chief-engineer-wearing-vr-600w-1053687887.jpg"
+        }
+      },
     ]
   },
   {

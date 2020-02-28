@@ -2,6 +2,7 @@ import React, { useContext, useRef } from 'react'
 import { DispatchContext, StateContext } from './AnimationContext'
 import { useFrame } from 'react-three-fiber'
 import { useEffect } from 'react'
+import * as THREE from 'three'
 import lerp from 'lerp'
 
 const MIN_ZOOM = 8;
@@ -11,6 +12,7 @@ const Controls = ({ mouse, zoomPos, clickOutside }) => {
   const state = useContext(StateContext)
   const dispatch = useContext(DispatchContext)
   const lastZoomValue = useRef(MIN_ZOOM)
+  const MAX_VELOCITY = 0.3;
 
   // Handle click outside a card
   useFrame(() => {
@@ -58,17 +60,26 @@ const Controls = ({ mouse, zoomPos, clickOutside }) => {
     camera.rotation.y += 0.05 * (x - camera.rotation.y);
 
     // Check if we authorize zoom
-    const process = !(isZoomOut && camera.position.z >= MIN_ZOOM)
+    const process = state.zoomEnabled && !(isZoomOut && camera.position.z >= MIN_ZOOM)
 
     if (!state.card && process) {
-      camera.position.z = lerp(camera.position.z, camera.position.z + zoomPos.current, 0.001)
-    // } else if (state.card && isZoomOut) {
-    //   dispatch({ type: 'select', value: null })
+
+      let maxVelocity;
+      if (isZoomIn) {
+        maxVelocity = -MAX_VELOCITY; 
+      } else {
+        maxVelocity = MAX_VELOCITY; 
+      }
+      // camera.position.z = lerp(camera.position.z, (camera.position.z + zoomPos.current * 0.8) , 0.001)
+      const newVelocity = (zoomPos.current * 0.1);
+      const velocity = (Math.abs(newVelocity) >= MAX_VELOCITY) ? maxVelocity : newVelocity;
+      console.log(newVelocity, velocity)
+      camera.position.z = camera.position.z + velocity
     }
 
     //  ZoomOut prohibited, decrement zoom position to match world view
     if (!process && isZoomOut) {
-      zoomPos.current -= 20;
+      zoomPos.current -= 1;
     }
 
   })

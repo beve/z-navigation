@@ -5,7 +5,7 @@ import * as THREE from 'three'
 import Text from './Text'
 import { DispatchContext } from './AnimationContext'
 
-const Card = ({ color, position, video, image, label, url }) => {
+const Card = ({ position, video, image, label, url }) => {
 
   const dispatch = useContext(DispatchContext)
 
@@ -20,7 +20,7 @@ const Card = ({ color, position, video, image, label, url }) => {
 
   if (video) {
     vid = document.getElementById(video);
-      vid.play();
+    vid.play();
     vidTexture.current = new THREE.VideoTexture(vid)
   }
 
@@ -31,12 +31,14 @@ const Card = ({ color, position, video, image, label, url }) => {
   const onHover = () => {
     hovered.current = true;
     mesh.current.material.color = new THREE.Color('white')
+    dispatch({ type: 'zoomEnabled', value: false })
   }
 
   const onOut = () => {
     hovered.current = false;
     if (!clicked.current) {
-      mesh.current.material.color = new THREE.Color(color)
+      mesh.current.material.color = new THREE.Color('#5796B3')
+      dispatch({ type: 'zoomEnabled', value: true })
     }
   }
 
@@ -59,7 +61,7 @@ const Card = ({ color, position, video, image, label, url }) => {
     <>
       <mesh ref={mesh} position={position} onPointerOver={onHover} onPointerOut={onOut} onClick={onClick}>
         <planeBufferGeometry attach="geometry" args={[2, 1.4]} />
-        <meshLambertMaterial opacity={0.7} transparent attach="material" ref={material} color={color}>
+        <meshLambertMaterial opacity={0.7} transparent attach="material" ref={material} color={"5796B3"}>
           {vidTexture.current && <primitive attach="map" object={vidTexture.current} />}
           {imgTexture && <primitive attach="map" object={imgTexture} />}
         </meshLambertMaterial>
