@@ -5,6 +5,14 @@ const groups = [
     textColor: "#FF8A99",
     children: [
       {
+        type: "svg",
+        props: {
+          // src: '/assets/cursor.svg'
+          src: 'https://raw.githubusercontent.com/mrdoob/three.js/master/examples/models/svg/tiger.svg'
+          // src: 'https://raw.githubusercontent.com/drcmda/react-three-fiber/master/examples/resources/images/svg/night.svg'
+        }
+      },
+      {
         type: "text",
         props: {
           size: 1,

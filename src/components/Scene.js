@@ -1,5 +1,6 @@
 import React, { useContext } from "react"
 import Card from "./Card"
+import SVG from "./SVG"
 import Text from "./Text"
 import * as THREE from 'three'
 import {
@@ -28,7 +29,7 @@ const Scene = () => {
       if (Math.round(camera.position.z <= amb.z + 13)) {
         const c = new THREE.Color(amb.backgroundColor)
         scene.background = c
-        scene.fog.color = c
+        if (scene.fog) scene.fog.color = c
       }
     })
   })
@@ -55,6 +56,16 @@ const Scene = () => {
           );
           z -= 5;
           return t;
+        case "svg":
+          const s = (
+            <SVG
+              key={i}
+              {...props}
+              position={[0, 0, z + i]}
+            />
+          );
+          z -= 5;
+          return s;
         default:
           const c = (
             <Card

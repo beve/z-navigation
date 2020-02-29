@@ -2,7 +2,6 @@ import React, { useContext, useRef } from 'react'
 import { DispatchContext, StateContext } from './AnimationContext'
 import { useFrame } from 'react-three-fiber'
 import { useEffect } from 'react'
-import * as THREE from 'three'
 import lerp from 'lerp'
 
 const Controls = ({ mouse, zoomPos, clickOutside }) => {
@@ -65,7 +64,7 @@ const Controls = ({ mouse, zoomPos, clickOutside }) => {
       const currentZoomPos = zoomPos.current;
       if (isZoomIn) {
         maxVelocity = -state.maxVelocity; 
-      } else {
+      } else if (isZoomOut) {
         maxVelocity = state.maxVelocity; 
       }
       // camera.position.z = lerp(camera.position.z, (camera.position.z + zoomPos.current * 0.8) , 0.001)
@@ -84,9 +83,7 @@ const Controls = ({ mouse, zoomPos, clickOutside }) => {
   })
 
   useEffect(() => {
-    if (state.card) {
-      zoomPos.current = 0;
-    }
+    zoomPos.current = 0;
   }, [state.card, zoomPos]);
 
   return (
