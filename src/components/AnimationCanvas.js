@@ -24,7 +24,7 @@ const AnimationCanvas = () => {
   return (
 
     <Canvas
-      camera={{ near: 1, far: 20, position: [0, 0, 5] }}
+      camera={{ near: 0.1, far: 20, position: [0, 0, 5] }}
       onWheel={onWheel}
       onTouchMove={onMove}
       onMouseMove={onMove}

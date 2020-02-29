@@ -52,7 +52,7 @@ const SVG = forwardRef(({ src, position }, ref) => {
   useEffect(() => void svgResource.then(set), [])
 
   return (
-    <group ref={ref} scale={[0.01, 0.01, 0.001]} position={[position[0]-3, position[1]+3, position[2]]} rotation={[THREE.Math.degToRad(180), 0, 0]}>
+    <group ref={ref} scale={[0.01, 0.01, 1]} position={position} rotation={[THREE.Math.degToRad(180), 0, 0]}>
       {paths.map((path, i) => <Shape key={i} index={i} path={path} />)}
     </group>
   )

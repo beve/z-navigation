@@ -2,6 +2,7 @@ import React, { useContext } from "react"
 import Card from "./Card"
 import SVG from "./SVG"
 import Text from "./Text"
+import Cursor from './Cursor'
 import * as THREE from 'three'
 import {
   apply as applySpring,
@@ -87,7 +88,9 @@ const Scene = () => {
   return (
     <>
       <ambientLight />
+      <Cursor />
       <fog attach="fog" args={[fogColor, 10, 15]} />
+      <axesHelper args={0} />
       {[components]}
     </>
   );
