@@ -85,7 +85,7 @@ const Scene = () => {
               {...props}
               position={[xPos[cardNum % 4], yPos[cardNum % 4], z]}
               y={y * 0.05}
-              maskColor={group.backgroundColor}
+              maskColor={group.maskColor}
             />
           );
           z -= (++cardNum === group.children.length - 1) ? 12 : 1;

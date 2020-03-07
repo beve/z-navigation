@@ -1,21 +1,22 @@
 import React, { useContext, useEffect, useRef, useMemo, useState, Suspense } from 'react'
-import { useThree, useFrame } from 'react-three-fiber'
 import { useSpring, config } from '@react-spring/core'
 import { a } from '@react-spring/three'
-import lerp from 'lerp'
 import * as THREE from '../three-exports'
 import Text from './Text'
+import SVG from './SVG'
 import usePromise from "react-promise-suspense"
 import Effects from './Effects'
 import { DispatchContext } from './AnimationContext'
+import { useLocalStorage } from 'react-use';
 
-const Card = ({ position, video, image, label, url, y, maskColor }) => {
+const Card = ({ id, position, video, image, label, url, y, maskColor }) => {
 
   const dispatch = useContext(DispatchContext)
 
   const meshRef = useRef()
   const material = useRef()
   const imgTexture = useMemo(() => (image) ? new THREE.TextureLoader().load(image) : null, [image])
+  const [localStorageValue, setLocalStorageValue] = useLocalStorage(id, false);
 
   const Video = ({ src }) => {
     const v = usePromise(src => new Promise((resolve, reject) => {
@@ -41,7 +42,6 @@ const Card = ({ position, video, image, label, url, y, maskColor }) => {
     <a.mesh ref={meshRef} position={position} onPointerOver={onHover} onPointerOut={onOut} onClick={onClick} scale={scale}>
       <planeBufferGeometry attach="geometry" args={[4, 2.8]} />
       <meshBasicMaterial transparent attach="material" color={'red'} />
-      {label && <Text color="#333" size={0.1} position={[0, -0.9, 0]}>{label}</Text>}
     </a.mesh>
   )
 
@@ -86,16 +86,19 @@ const Card = ({ position, video, image, label, url, y, maskColor }) => {
   }
 
   return (
-    <Suspense fallback={<Loading />}>
-      <a.mesh ref={meshRef} position={position} onPointerOver={onHover} onPointerOut={onOut} onClick={onClick} scale={scale}>
-        <planeBufferGeometry attach="geometry" args={[4, 2.8]} />
-        <a.meshLambertMaterial opacity={opacity} transparent attach="material" ref={material} color={color}>
-          {video && <Video src={video} />}
-          {imgTexture && <primitive attach="map" object={imgTexture} />}
-        </a.meshLambertMaterial>
-        {label && <Text color="#333" size={0.1} position={[0, -0.9, 0]}>{label}</Text>}
-      </a.mesh>
-    </Suspense>
+    <a.group position={position} scale={scale}>
+      <Suspense fallback={<Loading />}>
+        <mesh ref={meshRef} onPointerOver={onHover} onPointerOut={onOut} onClick={onClick}>
+          <planeBufferGeometry attach="geometry" args={[4, 2.8]} />
+          <a.meshLambertMaterial opacity={opacity} transparent attach="material" ref={material} color={color}>
+            {video && <Video src={video} />}
+            {imgTexture && <primitive attach="map" object={imgTexture} />}
+          </a.meshLambertMaterial>
+          {label && <Text color="#333" size={0.1} position={[0, -0.9, 0]}>{label}</Text>}
+        </mesh>
+        <SVG src="/assets/eye.svg" position={[1.5,1.2,0.1]} scale={scale} />
+      </Suspense>
+    </a.group>
   )
 }
 

@@ -1,7 +1,7 @@
 const groups = [
   {
-    color: "#5796B3",
-    backgroundColor: "#5AA8CC",
+    maskColor: "#5796B3",
+    backgroundColor: "#fff",
     textColor: "#FF8A99",
     children: [
       // {
@@ -58,7 +58,7 @@ const groups = [
     ]
   },
   {
-    color: "#9BFF99",
+    maskColor: "#9BFF99",
     backgroundColor: "#8BDEE8",
     textColor: "#E2FF99",
     children: [
@@ -101,7 +101,7 @@ const groups = [
     ]
   },
   {
-    color: "#5796B3",
+    maskColor: "#5796B3",
     backgroundColor: "#5AA8CC",
     textColor: "#FF8A99",
     children: [
