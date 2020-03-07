@@ -1,39 +1,50 @@
-import React, { useContext } from "react"
+import React, { useContext, useEffect, useRef } from "react"
+import Background from './Background'
 import Card from "./Card"
 import SVG from "./SVG"
 import Text from "./Text"
-import Cursor from './Cursor'
-import * as THREE from 'three'
-import {
-  apply as applySpring,
-  useSpring,
-  a,
-  interpolate
-} from "react-spring/three";
-import { useFrame } from "react-three-fiber"
+import { a, useSpring } from '@react-spring/three'
+import { useFrame, useThree } from "react-three-fiber"
+import useYScroll from '../utils/useYScroll'
 import groups from "../groups"
 import { DispatchContext } from './AnimationContext'
-
-const ambiances = [];
-const xPos = [-2, -1.5, 3, 3];
-const yPos = [-2, 2, 1.5, -2.5];
+import Effects from './Effects'
 
 const Scene = () => {
 
-  let fogColor = '#fff';
+  const ambiances = [];
+  const xPos = [-4, -3, 6, 6];
+  const yPos = [-4, 4, 3, -5];
+
+  const [y] = useYScroll([-100, 2400], { domTarget: window })
+
+  const cardsContainerRef = useRef()
 
   const dispatch = useContext(DispatchContext)
 
-  useFrame(({ scene, camera }) => {
+  const [{ color: fogColor }, setFogColor] = useSpring(() => ({ color: groups[0].backgroundColor }))
+
+  useEffect(() => void dispatch({ type: 'setCardsContainer', cardsContainerRef }), [])
+
+  useFrame(({camera, mouse, scene }) => {
+    const currentZ = -y.value * 0.05;
     if (ambiances.length === 0) return;
     ambiances.forEach(amb => {
-      if (Math.round(camera.position.z <= amb.z + 13)) {
-        const c = new THREE.Color(amb.backgroundColor)
-        scene.background = c
-        if (scene.fog) scene.fog.color = c
+      if (Math.round(Math.round(currentZ) === amb.z && fogColor !== amb.backgroundColor)) {
+        setFogColor({color: amb.backgroundColor})
+        // scene.fog.color = fogColor.value
       }
     })
+    camera.rotation.x = mouse.y * 0.15;
+    camera.rotation.y = -mouse.x * 0.15;
   })
+
+
+  // fogColor.interpolate(c => {console.log(`ici ${c}`); scene.background = new THREE.Color('#fff')})
+  // if (scene.fog) scene.fog.color = fogColor.interpolate(c => new THREE.Color(c))
+
+
+  // fogColor.interpolate(c => scene.background = new THREE.Color(c))
 
   // z is position assigned to ambiances and components
   let z = 0;
@@ -73,7 +84,8 @@ const Scene = () => {
               key={i}
               {...props}
               position={[xPos[cardNum % 4], yPos[cardNum % 4], z]}
-              color
+              y={y * 0.05}
+              maskColor={group.backgroundColor}
             />
           );
           z -= (++cardNum === group.children.length - 1) ? 12 : 1;
@@ -83,15 +95,16 @@ const Scene = () => {
     return tmp;
   });
 
-  dispatch({ type: 'setMinZ', value: z + 10})
+  dispatch({ type: 'setMinZ', value: z + 10 })
 
   return (
     <>
       <ambientLight />
-      <Cursor />
-      <fog attach="fog" args={[fogColor, 10, 15]} />
-      <axesHelper args={0} />
-      {[components]}
+      <Background color={fogColor} />
+      <a.fog attach="fog" color={fogColor} args={[fogColor.value, 10, 25]} />
+      <a.group ref={cardsContainerRef} position-z={y.to(y => y * 0.05)}>
+        {[components]}
+      </a.group>
     </>
   );
 };
