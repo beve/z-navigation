@@ -39,9 +39,9 @@ const Card = ({ id, position, video, image, label, url, y, maskColor }) => {
   }
 
   const Loading = () => (
-    <a.mesh ref={meshRef} position={position} onPointerOver={onHover} onPointerOut={onOut} onClick={onClick} scale={scale}>
+    <a.mesh scale={scale}>
       <planeBufferGeometry attach="geometry" args={[4, 2.8]} />
-      <meshBasicMaterial transparent attach="material" color={'red'} />
+      <meshBasicMaterial opacity={0.7} transparent attach="material" color={maskColor} />
     </a.mesh>
   )
 
