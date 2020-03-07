@@ -1,6 +1,7 @@
 import React, { forwardRef, useEffect, useState } from 'react'
 // import SVGLoader from '../SVGLoader'
-import * as THREE from 'three'
+import * as THREE from '../three-exports'
+import { a } from '@react-spring/three'
 import { SVGLoader } from 'three/examples/jsm/loaders/SVGLoader.js'
 
 const Shape = ({ path, position, color, opacity, index }) => {
@@ -12,8 +13,8 @@ const Shape = ({ path, position, color, opacity, index }) => {
   if (fill !== undefined && fill !== 'none') {
     const shapes = path.toShapes(true);
     meshes.push(shapes.map((shape, i) => (
-      <mesh key={shape.uuid} position={[0,0,0.0001]}>
-        <meshBasicMaterial attach="material" side={THREE.DoubleSide} color={fill} />
+      <mesh key={shape.uuid} position={[0, 0, 0.001]}>
+        <a.meshBasicMaterial attach="material" side={THREE.DoubleSide} opacity={opacity} color={fill} />
         <shapeBufferGeometry attach="geometry" args={[shape]} />
       </mesh>
     )))
@@ -24,36 +25,45 @@ const Shape = ({ path, position, color, opacity, index }) => {
       let subPath = path.subPaths[j];
       const strokeGeometry = SVGLoader.pointsToStroke(subPath.getPoints(), path.userData.style);
       meshes.push(
-        <mesh key={strokeGeometry.uuid} geometry={strokeGeometry} position={[0,0,0]}>
-          <meshBasicMaterial attach="material" side={THREE.DoubleSide} color={stroke} />
+        <mesh key={strokeGeometry.uuid} geometry={strokeGeometry} position={[0, 0, 0.001]}>
+          <a.meshBasicMaterial attach="material" side={THREE.DoubleSide} opacity={opacity} color={stroke} />
         </mesh>
       )
     }
   }
 
   return (
-    <group position={[0,0,-index*0.01]}>
+    <group>
       {meshes}
     </group>
   )
 
 }
 
-const SVG = forwardRef(({ src, position }, ref) => {
+const SVG = forwardRef(({ src, position, opacity }, ref) => {
 
   const [paths, set] = useState([])
 
-  const svgResource = new Promise(resolve =>
-    new SVGLoader().load(src, shapes =>
-      resolve(shapes.paths)
+  useEffect(() => {
+    const svgResource = new Promise(resolve =>
+      new SVGLoader().load(src, shapes =>
+        resolve(shapes.paths)
+      )
     )
-  )
-
-  useEffect(() => void svgResource.then(set), [])
+    let process = true;
+    svgResource.then(res => {
+      if (process) {
+        set(res)
+      }
+    })
+    return () => {
+      process = false;
+    }
+  }, [src])
 
   return (
     <group ref={ref} scale={[0.01, 0.01, 1]} position={position} rotation={[THREE.Math.degToRad(180), 0, 0]}>
-      {paths.map((path, i) => <Shape key={i} index={i} path={path} />)}
+      {paths.map((path, i) => <Shape opacity={opacity} key={i} index={i} path={path} />)}
     </group>
   )
 })
