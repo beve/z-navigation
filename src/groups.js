@@ -23,7 +23,7 @@ const groups = [
       {
         type: "card",
         props: {
-          video: "video1",
+          video: "https://ak7.picdn.net/shutterstock/videos/1036579007/preview/stock-footage-close-up-shot-of-a-surgeon-doctor-with-augmented-reality-vr-glasses-looking-at-futuristic-medical.mp4",
           label: "Virtual reality"
         }
       },
@@ -37,7 +37,7 @@ const groups = [
       {
         type: "card",
         props: {
-          video: "video2",
+          video: "https://ak2.picdn.net/shutterstock/videos/1029926642/preview/stock-footage-automotive-engineer-working-on-electric-car-chassis-platform-using-tablet-computer-with-augmented.mp4",
           label: ""
         }
       },
@@ -73,7 +73,7 @@ const groups = [
       {
         type: "card",
         props: {
-          video: "video1",
+          video: "https://ak7.picdn.net/shutterstock/videos/1036579007/preview/stock-footage-close-up-shot-of-a-surgeon-doctor-with-augmented-reality-vr-glasses-looking-at-futuristic-medical.mp4",
           label: "Virtual reality"
         }
       },
@@ -87,7 +87,7 @@ const groups = [
       {
         type: "card",
         props: {
-          video: "video2",
+          video: "https://ak2.picdn.net/shutterstock/videos/1029926642/preview/stock-footage-automotive-engineer-working-on-electric-car-chassis-platform-using-tablet-computer-with-augmented.mp4",
           label: ""
         }
       },
