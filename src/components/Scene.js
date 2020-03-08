@@ -4,13 +4,15 @@ import Card from "./Card"
 import SVG from "./SVG"
 import Text from "./Text"
 import { a, useSpring } from '@react-spring/three'
-import lerp from 'lerp'
-import { useFrame, Dom, useThree } from "react-three-fiber"
+import * as THREE from 'three'
+import { useFrame, Dom, useThree, extend } from "react-three-fiber"
 import useYScroll from '../utils/useYScroll'
 import groups from "../groups"
 import { DispatchContext } from './AnimationContext'
 import Effects from './Effects'
-import { useMotion, useOrientation } from 'react-use';
+import { DeviceOrientationControls } from 'three/examples/jsm/controls/DeviceOrientationControls'
+extend({ DeviceOrientationControls })
+
 
 const Scene = ({ isMobile }) => {
 
@@ -18,7 +20,7 @@ const Scene = ({ isMobile }) => {
   const xPos = [-4, -3, 6, 6];
   const yPos = [-4, 4, 3, -5];
 
-  const [y] = useYScroll([-100, 2400], { domTarget: window })
+  const controlsRef = useRef()
 
   const cardsContainerRef = useRef()
 
@@ -128,8 +130,9 @@ const Scene = ({ isMobile }) => {
               key={i}
               {...props}
               position={[xPos[cardNum % 4], yPos[cardNum % 4], z]}
-              y={y * 0.05}
+              // y={y * 0.05}
               maskColor={group.maskColor}
+              iconColor={group.iconColor}
             />
           );
           z -= (++cardNum === group.children.length - 1) ? 12 : 1;
@@ -139,17 +142,32 @@ const Scene = ({ isMobile }) => {
     return tmp;
   });
 
+  let [y] = useYScroll([-100, (z * -17)], { domTarget: window })
+
   dispatch({ type: 'setMinZ', value: z + 10 })
+
+  useFrame(() => {
+    if (isMobile) {
+      controlsRef.current.update()
+    }
+  })
+
+  useEffect(() => {
+    camera.setRotationFromEuler(new THREE.Euler(0, 0, 0))
+  }, [camera])
 
   return (
     <>
       <ambientLight />
+      {isMobile && <deviceOrientationControls ref={controlsRef} args={[camera]} />}
       <Background color={fogColor} />
       <a.fog attach="fog" color={fogColor} args={[fogColor.value, 10, 25]} />
       <a.group ref={cardsContainerRef} position-z={y.to(y => y * 0.05)}>
         {[components]}
       </a.group>
-      {/* <Dom>{dom}</Dom> */}
+      <Dom>
+        <SVG src="/assets/eye.png" position={[-1, -1, 0]} />
+      </Dom>
     </>
   );
 };

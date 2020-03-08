@@ -14,7 +14,7 @@ const Shape = ({ path, position, color, opacity, index }) => {
     const shapes = path.toShapes(true);
     meshes.push(shapes.map((shape, i) => (
       <mesh key={shape.uuid} position={[0, 0, 0.001]}>
-        <a.meshBasicMaterial attach="material" side={THREE.DoubleSide} opacity={opacity} color={fill} />
+        <a.meshBasicMaterial attach="material" side={THREE.DoubleSide} opacity={opacity} color={color || fill} />
         <shapeBufferGeometry attach="geometry" args={[shape]} />
       </mesh>
     )))
@@ -40,7 +40,7 @@ const Shape = ({ path, position, color, opacity, index }) => {
 
 }
 
-const SVG = forwardRef(({ src, position, opacity }, ref) => {
+const SVG = forwardRef(({ src, position, opacity, color }, ref) => {
 
   const [paths, set] = useState([])
 
@@ -63,7 +63,7 @@ const SVG = forwardRef(({ src, position, opacity }, ref) => {
 
   return (
     <group ref={ref} scale={[0.01, 0.01, 1]} position={position} rotation={[THREE.Math.degToRad(180), 0, 0]}>
-      {paths.map((path, i) => <Shape opacity={opacity} key={i} index={i} path={path} />)}
+      {paths.map((path, i) => <Shape color={color} opacity={opacity} key={i} index={i} path={path} />)}
     </group>
   )
 })

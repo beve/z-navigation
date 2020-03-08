@@ -9,7 +9,7 @@ import Effects from './Effects'
 import { DispatchContext } from './AnimationContext'
 import { useLocalStorage } from 'react-use';
 
-const Card = ({ id, position, video, image, label, url, y, maskColor }) => {
+const Card = ({ id, position, video, image, label, url, maskColor, iconColor }) => {
 
   const dispatch = useContext(DispatchContext)
 
@@ -96,7 +96,7 @@ const Card = ({ id, position, video, image, label, url, y, maskColor }) => {
           </a.meshLambertMaterial>
           {label && <Text color="#333" size={0.1} position={[0, -0.9, 0]}>{label}</Text>}
         </mesh>
-        <SVG src="/assets/eye.svg" position={[1.5,1.2,0.1]} scale={scale} />
+        <SVG src="/assets/eye.svg" position={[1.5,1.2,0.1]} scale={scale} color={iconColor} />
       </Suspense>
     </a.group>
   )
