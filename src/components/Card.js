@@ -6,7 +6,6 @@ import Text from './Text'
 import SVG from './SVG'
 import usePromise from "react-promise-suspense"
 import Effects from './Effects'
-// import { DispatchContext } from './AnimationContext'
 import { useLocalStorage } from 'react-use';
 
 const Card = ({ id, position, video, image, label, url, maskColor, iconColor, onClick, clickOutside, onPointerOut, onPointerOver }) => {
@@ -47,7 +46,6 @@ const Card = ({ id, position, video, image, label, url, maskColor, iconColor, on
 
   // const hovered = useRef(false)
   const [hovered, setHovered] = useState(false)
-  const clicked = useRef(false)
 
   const { color, opacity, scale } = useSpring({ color: hovered ? '#fff' : maskColor, opacity: hovered ? 1 : 0.7, scale: hovered ? [1.2, 1.2, 1] : [1, 1, 1] })
 
@@ -55,7 +53,6 @@ const Card = ({ id, position, video, image, label, url, maskColor, iconColor, on
     e.stopPropagation()
     onPointerOver(groupRef.current)
     setHovered(true)
-    // dispatch({ type: 'setCursor', value: 'eye' })
   }
 
   const onOutHandle = (e) => {
@@ -66,14 +63,6 @@ const Card = ({ id, position, video, image, label, url, maskColor, iconColor, on
   const onClickHandle = (e) => {
     e.stopPropagation();
     onClick(groupRef.current);
-    // clicked.current = !clicked.current;
-    // if (video) {
-    //   if (clicked.current) {
-    //     vid.play();
-    //   } else {
-    //     vid.pause()
-    //   }
-    // }
   }
 
   return (

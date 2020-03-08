@@ -21,6 +21,8 @@ const Scene = ({ isMobile, clickOutside }) => {
   const xPos = [-4, -3, 6, 6];
   const yPos = [-4, 4, 3, -5];
 
+  console.log('DRAW SCENE')
+
   const selectedMesh = useRef()
 
   const [{ color: fogColor }, setFogColor] = useSpring(() => ({ color: groups[0].backgroundColor }))
@@ -54,7 +56,7 @@ const Scene = ({ isMobile, clickOutside }) => {
 
   const onCardClickHandle = (c) => {
     // Ignore out of view cards
-    if (Math.abs(y.value * 0.05 + c.position.z) > 17) {
+    if (Math.abs(y.value * 0.05 + c.position.z) > 25) {
       return;
     }
     if (c === selectedMesh.current) {
@@ -170,7 +172,7 @@ const Scene = ({ isMobile, clickOutside }) => {
               clickOutside={clickOutside}
             />
           );
-          z -= (++cardNum === group.children.length - 1) ? 12 : 3;
+          z -= (++cardNum === group.children.length - 1) ? 4.5 : 3;
           return c;
       }
     });
