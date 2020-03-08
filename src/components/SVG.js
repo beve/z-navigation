@@ -4,16 +4,16 @@ import * as THREE from '../three-exports'
 import { a } from '@react-spring/three'
 import { SVGLoader } from 'three/examples/jsm/loaders/SVGLoader.js'
 
-const Shape = ({ path, position, color, opacity, index }) => {
+const Shape = ({ path, opacity }) => {
 
   const meshes = []
 
   const { fill, fillOpacity, stroke, strokeOpacity } = path.userData.style;
-
+  
   if (fill !== undefined && fill !== 'none') {
     const shapes = path.toShapes(true);
     meshes.push(shapes.map((shape, i) => (
-      <mesh key={shape.uuid} position={[0, 0, 0.001]}>
+      <mesh key={shape.uuid} position={[0, 0, 0.01]}>
         <a.meshBasicMaterial attach="material" side={THREE.DoubleSide} opacity={opacity} color={color || fill} />
         <shapeBufferGeometry attach="geometry" args={[shape]} />
       </mesh>
@@ -25,8 +25,8 @@ const Shape = ({ path, position, color, opacity, index }) => {
       let subPath = path.subPaths[j];
       const strokeGeometry = SVGLoader.pointsToStroke(subPath.getPoints(), path.userData.style);
       meshes.push(
-        <mesh key={strokeGeometry.uuid} geometry={strokeGeometry} position={[0, 0, 0.001]}>
-          <a.meshBasicMaterial attach="material" side={THREE.DoubleSide} opacity={opacity} color={stroke} />
+        <mesh key={JSON.stringify(strokeGeometry)} geometry={strokeGeometry} position={[0, 0, 0.01]}>
+          <a.meshBasicMaterial attach="material" side={THREE.DoubleSide} opacity={opacity} color={color || stroke} />
         </mesh>
       )
     }
