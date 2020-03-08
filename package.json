@@ -17,7 +17,7 @@
     "react-scripts": "3.4.0",
     "react-three-fiber": "^4.0.19",
     "react-use": "^13.27.0",
-    "react-use-gesture": "^7.0.4",
+    "react-use-gesture": "^7.0.5",
     "three": "^0.114.0"
   },
   "scripts": {
