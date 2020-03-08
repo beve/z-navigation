@@ -6,12 +6,12 @@ import Text from './Text'
 import SVG from './SVG'
 import usePromise from "react-promise-suspense"
 import Effects from './Effects'
-import { DispatchContext } from './AnimationContext'
+// import { DispatchContext } from './AnimationContext'
 import { useLocalStorage } from 'react-use';
 
-const Card = ({ id, position, video, image, label, url, maskColor, iconColor }) => {
+const Card = ({ id, position, video, image, label, url, maskColor, iconColor, onClick, clickOutside }) => {
 
-  const dispatch = useContext(DispatchContext)
+  // const dispatch = useContext(DispatchContext)
 
   const meshRef = useRef()
   const material = useRef()
@@ -31,7 +31,7 @@ const Card = ({ id, position, video, image, label, url, maskColor, iconColor }) 
       vid.style.display = 'none';
       vid.oncanplay = () => {
         vid.play();
-        setTimeout(() => resolve(vid), 2000);
+        setTimeout(() => resolve(vid), 0);
       };
       vid.onerror = reject;
     }), [src]);
@@ -54,19 +54,19 @@ const Card = ({ id, position, video, image, label, url, maskColor, iconColor }) 
   const onHover = (e) => {
     e.stopPropagation()
     setHovered(true)
-    dispatch({ type: 'setCursor', value: 'eye' })
+    // dispatch({ type: 'setCursor', value: 'eye' })
   }
 
   const onOut = () => {
     setHovered(false)
-    dispatch({ type: 'setCursor', value: 'pointer' })
+    // dispatch({ type: 'setCursor', value: 'pointer' })
     // if (!clicked.current) {
     //   mesh.current.material.color = new THREE.Color('#5796B3')
     //   dispatch({ type: 'zoomEnabled', value: true })
     // }
   }
 
-  const onClick = (e) => {
+  const onClickHandle = (e) => {
     e.stopPropagation();
     clicked.current = !clicked.current;
     // if (video) {
@@ -76,19 +76,19 @@ const Card = ({ id, position, video, image, label, url, maskColor, iconColor }) 
     //     vid.pause()
     //   }
     // }
-    if (clicked.current) {
-      meshRef.current.userData = { display: true }
-      // dispatch({ type: 'setCameraMatrixWorld', value: camera.matrixWorld})
-      // dispatch({ type: 'select', value: (clicked.current) ? meshRef : null })
-    } else {
-      // dispatch({ type: 'unselect', value: true })
-    }
+    onClick((clicked.current) ? meshRef.current : null)
+    // if (clicked.current) {
+    // meshRef.current.userData = { display: true }
+    // dispatch({ type: 'setCameraMatrixWorld', value: camera.matrixWorld})
+    // dispatch({ type: 'select', value: (clicked.current) ? meshRef : null })
+    //  dispatch({ type: 'select', value: (clicked.current) ? meshRef : null })
+    // }
   }
 
   return (
     <a.group position={position} scale={scale}>
       <Suspense fallback={<Loading />}>
-        <mesh ref={meshRef} onPointerOver={onHover} onPointerOut={onOut} onClick={onClick}>
+        <mesh ref={meshRef} onPointerOver={onHover} onPointerOut={onOut} onClick={onClickHandle}>
           <planeBufferGeometry attach="geometry" args={[4, 2.8]} />
           <a.meshLambertMaterial opacity={opacity} transparent attach="material" ref={material} color={color}>
             {video && <Video src={video} />}
@@ -96,7 +96,7 @@ const Card = ({ id, position, video, image, label, url, maskColor, iconColor }) 
           </a.meshLambertMaterial>
           {label && <Text color="#333" size={0.1} position={[0, -0.9, 0]}>{label}</Text>}
         </mesh>
-        <SVG src="/assets/eye.svg" position={[1.5,1.2,0.1]} scale={scale} color={iconColor} />
+        <SVG src="/assets/check.svg" position={[1.3, 1.2, 0.1]} scale={scale} color={iconColor} />
       </Suspense>
     </a.group>
   )

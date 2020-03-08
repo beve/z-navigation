@@ -8,7 +8,7 @@ const Shape = ({ path, opacity }) => {
 
   const meshes = []
 
-  const { fill, fillOpacity, stroke, strokeOpacity } = path.userData.style;
+  const { fill, fillOpacity, stroke, strokeOpacity, color } = path.userData.style;
   
   if (fill !== undefined && fill !== 'none') {
     const shapes = path.toShapes(true);

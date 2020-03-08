@@ -27,7 +27,7 @@ const AnimationCanvas = () => {
     <Canvas
       // pixelRatio={Math.min(2, isMobile ? window.devicePixelRatio : 1)}
       pixelRatio={typeof window !== 'undefined' ? window.pixelRatio : 1}
-      camera={{ near: 2, far: 30, position: [0, 0, 5], fov: isMobile ? 120 : 90 }}
+      camera={{ near: 2, far: 30, position: [0, 0, 5], fov: isMobile ? 110 : 90 }}
       scale={[0.5, 0.5, 0.5]}
       // onWheel={onWheel}
       // onTouchMove={onMove}
@@ -42,7 +42,7 @@ const AnimationCanvas = () => {
         // gl.outputEncoding = THREE.sRGBEncoding
       }}>
       <AnimationContext cursor={<Cursor />} controls={<Controls clickOutside={clickOutside} />}>
-        <Scene isMobile={isMobile} />
+        <Scene isMobile={isMobile} clickOutside={clickOutside} />
       </AnimationContext>
     </Canvas>
   )

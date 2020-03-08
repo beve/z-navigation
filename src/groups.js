@@ -1,17 +1,10 @@
 const groups = [
   {
-    maskColor: "#5796B3",
+    maskColor: "#5f8aaa",
     backgroundColor: "#fff",
     textColor: "#FF8A99",
+    iconColor: '#fabe4c',
     children: [
-      // {
-      //   type: "svg",
-      //   props: {
-      //     // src: '/assets/cat.svg'
-      //     src: 'https://raw.githubusercontent.com/mrdoob/three.js/master/examples/models/svg/tiger.svg'
-      //     // src: 'https://raw.githubusercontent.com/drcmda/react-three-fiber/master/examples/resources/images/svg/night.svg'
-      //   }
-      // },
       {
         type: "text",
         props: {
@@ -24,7 +17,7 @@ const groups = [
         type: "card",
         props: {
           video: "https://ak7.picdn.net/shutterstock/videos/1036579007/preview/stock-footage-close-up-shot-of-a-surgeon-doctor-with-augmented-reality-vr-glasses-looking-at-futuristic-medical.mp4",
-          label: "Virtual reality"
+          label: "Virtual reality",
         }
       },
       {
@@ -113,8 +106,16 @@ const groups = [
           children: "À vous !"
         }
       },
+      // {
+      //   type: "svg",
+      //   props: {
+      //     // src: '/assets/cat.svg'
+      //     src: 'https://raw.githubusercontent.com/mrdoob/three.js/master/examples/models/svg/tiger.svg'
+      //     // src: 'https://raw.githubusercontent.com/drcmda/react-three-fiber/master/examples/resources/images/svg/night.svg'
+      //   }
+      // },
     ]
-  }
+  },
 ];
 
 export default groups;

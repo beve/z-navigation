@@ -25,14 +25,12 @@ const Controls = ({ mouse, zoomPos, clickOutside }) => {
   useFrame(({ camera }) => {
     if (state.card) {
       if (temp.distanceTo(camera.position) > 0.1) {
+        origin.set(state.card.current.matrixWorld);
         temp.setFromMatrixPosition(state.card.current.matrixWorld);
         temp.z += 4;
         camera.position.lerp(temp, 0.2);
       } else {
-        origin.setFromMatrixPosition(state.cameraMatrixWorld);
-        console.log(`ici ${origin.distanceTo(camera.position)}`)
         if (clickOutside.current && (origin.distanceTo(camera.position) > 0.01)) {
-          console.log('pif paf')
           camera.position.lerp(origin, 0.2);
         } else {
           clickOutside.current = false;

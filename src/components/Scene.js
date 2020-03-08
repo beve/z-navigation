@@ -1,54 +1,56 @@
-import React, { useContext, useEffect, useRef, useState } from "react"
+import React, { useContext, useEffect, useRef, useCallback } from "react"
 import Background from './Background'
 import Card from "./Card"
 import SVG from "./SVG"
 import Text from "./Text"
 import { a, useSpring } from '@react-spring/three'
 import * as THREE from 'three'
-import { useFrame, Dom, useThree, extend } from "react-three-fiber"
-import useYScroll from '../utils/useYScroll'
+import { useFrame, extend } from "react-three-fiber"
 import groups from "../groups"
-import { DispatchContext } from './AnimationContext'
-import Effects from './Effects'
-import { DeviceOrientationControls } from 'three/examples/jsm/controls/DeviceOrientationControls'
-extend({ DeviceOrientationControls })
+import { config } from '@react-spring/core'
+import { useGesture } from 'react-use-gesture'
+import clamp from 'lodash/clamp'
+// import { DeviceOrientationControls } from 'three/examples/jsm/controls/DeviceOrientationControls'
+// extend({ DeviceOrientationControls })
 
 
-const Scene = ({ isMobile }) => {
+const Scene = ({ isMobile, clickOutside }) => {
 
   const ambiances = [];
   const xPos = [-4, -3, 6, 6];
   const yPos = [-4, 4, 3, -5];
 
-  const controlsRef = useRef()
-
-  const cardsContainerRef = useRef()
-
-  const dispatch = useContext(DispatchContext)
+  const selectedMesh = useRef()
 
   const [{ color: fogColor }, setFogColor] = useSpring(() => ({ color: groups[0].backgroundColor }))
 
-  // const { type: deviceOrientation } = useOrientation()
-  // const deviceMotion = useMotion()
-
-  useEffect(() => void dispatch({ type: 'setCardsContainer', cardsContainerRef }), [])
-
-  // const [dom, setDom] = useState()
-
-  const motion = useRef([0, 0])
-
-  const motionprocess = (event) => {
-    motion.current = [event.alpha, event.beta]
+  function useYScroll(bounds, props) {
+    const [{ y }, set] = useSpring(() => ({ y: 0, config: config.slow }))
+    const fn = useCallback(
+      ({ event, direction, distance, velocity, xy: [, cy], previous: [, py], memo = y.getValue() }) => {
+        let newY
+        if (!selectedMesh.current && event.type === 'touchmove') {
+          const [, sign] = direction;
+          newY = clamp((memo + (sign * distance) * 0.15 + 1), ...bounds)
+        } else if (!selectedMesh.current && event.type === 'wheel') {
+          newY = clamp(memo + cy - py, ...bounds)
+        }
+        set({ y: newY })
+        return newY
+      },
+      [bounds, y, set]
+    )
+    const bind = useGesture({ onWheel: fn, onDrag: fn }, props)
+    useEffect(() => props && props.domTarget && bind(), [props, bind])
+    return [y, bind]
   }
 
-  useEffect(() => {
-    if (isMobile) {
-      window.addEventListener('devicemotion', motionprocess, true)
-      return () => {
-        window.removeEventListener('devicemotion', motionprocess)
-      }
-    }
-  }, [])
+  const onCardClickHandle = (c) => {
+    selectedMesh.current = c;
+  }
+
+  let finish = new THREE.Vector3()
+  let origin = null;
 
   useFrame(({ camera, mouse, scene }) => {
     const currentZ = -y.value * 0.05;
@@ -59,18 +61,39 @@ const Scene = ({ isMobile }) => {
         // scene.fog.color = fogColor.value
       }
     })
-    if (isMobile) {
-      // camera.rotation.y = camera.rotation.y + (motion.current.beta * 0.01);
-      // camera.rotation.y = lerp(camera.rotation.x, deviceMotion.rotationRate.beta, 0.01);
-      // camera.rotation.y = deviceMotion.rotationRate.beta * 0.01;
-      // setDom(deviceMotion.rotationRate.beta)
-    } else {
+
+    if (clickOutside.current) {
+      selectedMesh.current = null
+    }
+
+    if (selectedMesh.current) {
+      if (!origin) {
+        origin = new THREE.Vector3();
+        origin.copy(camera.position)
+        finish.setFromMatrixPosition(selectedMesh.current.matrixWorld);
+        finish.z += 4;
+      }
+      if (finish.distanceTo(camera.position) > 0.1) {
+        camera.position.lerp(finish, 0.2);
+      } else {
+        console.log(Date.now())
+      }
+    } else if (origin !== null) {
+      if (camera.position.distanceTo(origin) > 0.1) {
+        camera.position.lerp(origin, 0.2);
+      } else {
+        origin = null;
+        clickOutside.current = false;
+      }
+    }
+    if (!isMobile) {
       camera.rotation.x = mouse.y * 0.15;
       camera.rotation.y = -mouse.x * 0.15;
     }
+    //   if (isMobile) {
+    //     controlsRef.current.update()
+    //   }
   })
-
-  const { camera } = useThree();
 
   // On device orientation change, adapt camera fov
   // useEffect(() => {
@@ -84,13 +107,6 @@ const Scene = ({ isMobile }) => {
   // camera.updateProjectionMatrix()
   // document.getElementsByName('canvas').style.rotation = 90;
   // }, [deviceOrientation])
-
-
-  // fogColor.interpolate(c => {console.log(`ici ${c}`); scene.background = new THREE.Color('#fff')})
-  // if (scene.fog) scene.fog.color = fogColor.interpolate(c => new THREE.Color(c))
-
-
-  // fogColor.interpolate(c => scene.background = new THREE.Color(c))
 
   // z is position assigned to ambiances and components
   let z = 0;
@@ -130,9 +146,10 @@ const Scene = ({ isMobile }) => {
               key={i}
               {...props}
               position={[xPos[cardNum % 4], yPos[cardNum % 4], z]}
-              // y={y * 0.05}
               maskColor={group.maskColor}
               iconColor={group.iconColor}
+              onClick={onCardClickHandle}
+              clickOutside={clickOutside}
             />
           );
           z -= (++cardNum === group.children.length - 1) ? 12 : 1;
@@ -142,32 +159,17 @@ const Scene = ({ isMobile }) => {
     return tmp;
   });
 
-  let [y] = useYScroll([-100, (z * -17)], { domTarget: window })
-
-  dispatch({ type: 'setMinZ', value: z + 10 })
-
-  useFrame(() => {
-    if (isMobile) {
-      controlsRef.current.update()
-    }
-  })
-
-  useEffect(() => {
-    camera.setRotationFromEuler(new THREE.Euler(0, 0, 0))
-  }, [camera])
+  let [y] = useYScroll([-100, (z * -17)], { domTarget: window }, selectedMesh.current)
 
   return (
     <>
       <ambientLight />
-      {isMobile && <deviceOrientationControls ref={controlsRef} args={[camera]} />}
+      {/* {isMobile && <deviceOrientationControls ref={controlsRef} args={[camera]} />} */}
       <Background color={fogColor} />
       <a.fog attach="fog" color={fogColor} args={[fogColor.value, 10, 25]} />
-      <a.group ref={cardsContainerRef} position-z={y.to(y => y * 0.05)}>
+      <a.group position-z={y.to(y => y * 0.05)}>
         {[components]}
       </a.group>
-      <Dom>
-        <SVG src="/assets/eye.png" position={[-1, -1, 0]} />
-      </Dom>
     </>
   );
 };
