@@ -1,16 +1,18 @@
-import React, { useContext, useEffect, useRef } from "react"
+import React, { useContext, useEffect, useRef, useState } from "react"
 import Background from './Background'
 import Card from "./Card"
 import SVG from "./SVG"
 import Text from "./Text"
 import { a, useSpring } from '@react-spring/three'
-import { useFrame, useThree } from "react-three-fiber"
+import lerp from 'lerp'
+import { useFrame, Dom, useThree } from "react-three-fiber"
 import useYScroll from '../utils/useYScroll'
 import groups from "../groups"
 import { DispatchContext } from './AnimationContext'
 import Effects from './Effects'
+import { useMotion, useOrientation } from 'react-use';
 
-const Scene = () => {
+const Scene = ({ isMobile }) => {
 
   const ambiances = [];
   const xPos = [-4, -3, 6, 6];
@@ -24,20 +26,62 @@ const Scene = () => {
 
   const [{ color: fogColor }, setFogColor] = useSpring(() => ({ color: groups[0].backgroundColor }))
 
+  // const { type: deviceOrientation } = useOrientation()
+  // const deviceMotion = useMotion()
+
   useEffect(() => void dispatch({ type: 'setCardsContainer', cardsContainerRef }), [])
 
-  useFrame(({camera, mouse, scene }) => {
+  // const [dom, setDom] = useState()
+
+  const motion = useRef([0, 0])
+
+  const motionprocess = (event) => {
+    motion.current = [event.alpha, event.beta]
+  }
+
+  useEffect(() => {
+    if (isMobile) {
+      window.addEventListener('devicemotion', motionprocess, true)
+      return () => {
+        window.removeEventListener('devicemotion', motionprocess)
+      }
+    }
+  }, [])
+
+  useFrame(({ camera, mouse, scene }) => {
     const currentZ = -y.value * 0.05;
     if (ambiances.length === 0) return;
     ambiances.forEach(amb => {
       if (Math.round(Math.round(currentZ) === amb.z && fogColor !== amb.backgroundColor)) {
-        setFogColor({color: amb.backgroundColor})
+        setFogColor({ color: amb.backgroundColor })
         // scene.fog.color = fogColor.value
       }
     })
-    camera.rotation.x = mouse.y * 0.15;
-    camera.rotation.y = -mouse.x * 0.15;
+    if (isMobile) {
+      // camera.rotation.y = camera.rotation.y + (motion.current.beta * 0.01);
+      // camera.rotation.y = lerp(camera.rotation.x, deviceMotion.rotationRate.beta, 0.01);
+      // camera.rotation.y = deviceMotion.rotationRate.beta * 0.01;
+      // setDom(deviceMotion.rotationRate.beta)
+    } else {
+      camera.rotation.x = mouse.y * 0.15;
+      camera.rotation.y = -mouse.x * 0.15;
+    }
   })
+
+  const { camera } = useThree();
+
+  // On device orientation change, adapt camera fov
+  // useEffect(() => {
+  // setDom(JSON.stringify(deviceOrientation))
+  // if (typeof deviceOrientation === 'string' && deviceOrientation.match(/portrait/)) {
+  //   camera.fov = 120;
+  // } else {
+  //   camera.fov = 190;
+  // }
+  // camera.aspect = window.innerWidth / window.innerHeight;
+  // camera.updateProjectionMatrix()
+  // document.getElementsByName('canvas').style.rotation = 90;
+  // }, [deviceOrientation])
 
 
   // fogColor.interpolate(c => {console.log(`ici ${c}`); scene.background = new THREE.Color('#fff')})
@@ -105,6 +149,7 @@ const Scene = () => {
       <a.group ref={cardsContainerRef} position-z={y.to(y => y * 0.05)}>
         {[components]}
       </a.group>
+      {/* <Dom>{dom}</Dom> */}
     </>
   );
 };
