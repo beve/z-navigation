@@ -48,19 +48,25 @@ const Scene = ({ isMobile, clickOutside }) => {
 
   // const [cursor, setCursor] = useState('pointer')
 
-  let finish = new THREE.Vector3()
+  let translationObjective = new THREE.Vector3()
   let origin = null;
-  const camera = useThree()
+  const { camera } = useThree()
 
   const onCardClickHandle = (c) => {
     // Ignore out of view cards
     if (Math.abs(y.value * 0.05 + c.position.z) > 17) {
       return;
-    } 
+    }
     if (c === selectedMesh.current) {
       selectedMesh.current = null;
     } else {
       selectedMesh.current = c;
+      translationObjective.setFromMatrixPosition(selectedMesh.current.matrixWorld);
+      translationObjective.z += 2.5;
+      if (origin === null) {
+        origin = new THREE.Vector3();
+        origin.copy(camera.position)
+      }
     }
   }
 
@@ -88,21 +94,12 @@ const Scene = ({ isMobile, clickOutside }) => {
     }
 
     if (selectedMesh.current) {
-      if (!origin) {
-        origin = new THREE.Vector3();
-        origin.copy(camera.position)
-        finish.setFromMatrixPosition(selectedMesh.current.matrixWorld);
-        finish.z += 4;
-      }
-      if (finish.distanceTo(camera.position) > 0.1) {
-        camera.position.lerp(finish, 0.2);
+      if (translationObjective.distanceTo(camera.position) > 0.1) {
+        camera.position.lerp(translationObjective, 0.2);
       }
     } else if (origin !== null) {
       if (camera.position.distanceTo(origin) > 0.1) {
         camera.position.lerp(origin, 0.2);
-      } else {
-        origin = null;
-        clickOutside.current = false;
       }
     }
     if (!isMobile) {
