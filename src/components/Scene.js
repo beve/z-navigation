@@ -1,15 +1,16 @@
-import React, { useContext, useEffect, useRef, useCallback } from "react"
+import React, { useContext, useEffect, useRef, useCallback, useState } from "react"
 import Background from './Background'
 import Card from "./Card"
 import SVG from "./SVG"
 import Text from "./Text"
 import { a, useSpring } from '@react-spring/three'
 import * as THREE from 'three'
-import { useFrame, extend } from "react-three-fiber"
+import { useFrame, useThree, extend } from "react-three-fiber"
 import groups from "../groups"
 import { config } from '@react-spring/core'
 import { useGesture } from 'react-use-gesture'
 import clamp from 'lodash/clamp'
+import Cursor from './Cursor'
 // import { DeviceOrientationControls } from 'three/examples/jsm/controls/DeviceOrientationControls'
 // extend({ DeviceOrientationControls })
 
@@ -45,12 +46,31 @@ const Scene = ({ isMobile, clickOutside }) => {
     return [y, bind]
   }
 
-  const onCardClickHandle = (c) => {
-    selectedMesh.current = c;
-  }
+  // const [cursor, setCursor] = useState('pointer')
 
   let finish = new THREE.Vector3()
   let origin = null;
+  const camera = useThree()
+
+  const onCardClickHandle = (c) => {
+    // Ignore out of view cards
+    if (Math.abs(y.value * 0.05 + c.position.z) > 17) {
+      return;
+    } 
+    if (c === selectedMesh.current) {
+      selectedMesh.current = null;
+    } else {
+      selectedMesh.current = c;
+    }
+  }
+
+  const onCardHoverHandle = (c) => {
+    // setCursor('eye')
+  }
+
+  const onCardOutHandle = (c) => {
+    // setCursor('pointer')
+  }
 
   useFrame(({ camera, mouse, scene }) => {
     const currentZ = -y.value * 0.05;
@@ -62,8 +82,9 @@ const Scene = ({ isMobile, clickOutside }) => {
       }
     })
 
-    if (clickOutside.current) {
+    if (clickOutside.current && selectedMesh.current) {
       selectedMesh.current = null
+      clickOutside.current = false;
     }
 
     if (selectedMesh.current) {
@@ -75,8 +96,6 @@ const Scene = ({ isMobile, clickOutside }) => {
       }
       if (finish.distanceTo(camera.position) > 0.1) {
         camera.position.lerp(finish, 0.2);
-      } else {
-        console.log(Date.now())
       }
     } else if (origin !== null) {
       if (camera.position.distanceTo(origin) > 0.1) {
@@ -149,10 +168,12 @@ const Scene = ({ isMobile, clickOutside }) => {
               maskColor={group.maskColor}
               iconColor={group.iconColor}
               onClick={onCardClickHandle}
+              onPointerOver={onCardHoverHandle}
+              onPointerOut={onCardOutHandle}
               clickOutside={clickOutside}
             />
           );
-          z -= (++cardNum === group.children.length - 1) ? 12 : 1;
+          z -= (++cardNum === group.children.length - 1) ? 12 : 3;
           return c;
       }
     });
@@ -170,6 +191,7 @@ const Scene = ({ isMobile, clickOutside }) => {
       <a.group position-z={y.to(y => y * 0.05)}>
         {[components]}
       </a.group>
+      {/* <Cursor cursor={cursor} /> */}
     </>
   );
 };

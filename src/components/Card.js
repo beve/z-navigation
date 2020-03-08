@@ -9,11 +9,11 @@ import Effects from './Effects'
 // import { DispatchContext } from './AnimationContext'
 import { useLocalStorage } from 'react-use';
 
-const Card = ({ id, position, video, image, label, url, maskColor, iconColor, onClick, clickOutside }) => {
+const Card = ({ id, position, video, image, label, url, maskColor, iconColor, onClick, clickOutside, onPointerOut, onPointerOver }) => {
 
   // const dispatch = useContext(DispatchContext)
 
-  const meshRef = useRef()
+  const groupRef = useRef()
   const material = useRef()
   const imgTexture = useMemo(() => (image) ? new THREE.TextureLoader().load(image) : null, [image])
   const [localStorageValue, setLocalStorageValue] = useLocalStorage(id, false);
@@ -51,24 +51,22 @@ const Card = ({ id, position, video, image, label, url, maskColor, iconColor, on
 
   const { color, opacity, scale } = useSpring({ color: hovered ? '#fff' : maskColor, opacity: hovered ? 1 : 0.7, scale: hovered ? [1.2, 1.2, 1] : [1, 1, 1] })
 
-  const onHover = (e) => {
+  const onHoverHandle = (e) => {
     e.stopPropagation()
+    onPointerOver(groupRef.current)
     setHovered(true)
     // dispatch({ type: 'setCursor', value: 'eye' })
   }
 
-  const onOut = () => {
+  const onOutHandle = (e) => {
     setHovered(false)
-    // dispatch({ type: 'setCursor', value: 'pointer' })
-    // if (!clicked.current) {
-    //   mesh.current.material.color = new THREE.Color('#5796B3')
-    //   dispatch({ type: 'zoomEnabled', value: true })
-    // }
+    onPointerOut(groupRef.current)
   }
 
   const onClickHandle = (e) => {
     e.stopPropagation();
-    clicked.current = !clicked.current;
+    onClick(groupRef.current);
+    // clicked.current = !clicked.current;
     // if (video) {
     //   if (clicked.current) {
     //     vid.play();
@@ -76,19 +74,12 @@ const Card = ({ id, position, video, image, label, url, maskColor, iconColor, on
     //     vid.pause()
     //   }
     // }
-    onClick((clicked.current) ? meshRef.current : null)
-    // if (clicked.current) {
-    // meshRef.current.userData = { display: true }
-    // dispatch({ type: 'setCameraMatrixWorld', value: camera.matrixWorld})
-    // dispatch({ type: 'select', value: (clicked.current) ? meshRef : null })
-    //  dispatch({ type: 'select', value: (clicked.current) ? meshRef : null })
-    // }
   }
 
   return (
-    <a.group position={position} scale={scale}>
+    <a.group position={position} scale={scale} ref={groupRef}>
       <Suspense fallback={<Loading />}>
-        <mesh ref={meshRef} onPointerOver={onHover} onPointerOut={onOut} onClick={onClickHandle}>
+        <mesh onPointerOver={onHoverHandle} onPointerOut={onOutHandle} onClick={onClickHandle}>
           <planeBufferGeometry attach="geometry" args={[4, 2.8]} />
           <a.meshLambertMaterial opacity={opacity} transparent attach="material" ref={material} color={color}>
             {video && <Video src={video} />}

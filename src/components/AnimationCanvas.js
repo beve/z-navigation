@@ -2,9 +2,7 @@ import React, { useRef, useEffect } from 'react'
 import { Canvas } from 'react-three-fiber'
 import * as THREE from '../three-exports'
 import Scene from './Scene'
-import AnimationContext from './AnimationContext'
-import Cursor from './Cursor'
-import Controls from './Controls'
+// import AnimationContext from './AnimationContext'
 import { disableBodyScroll } from 'body-scroll-lock';
 
 
@@ -41,9 +39,9 @@ const AnimationCanvas = () => {
         // gl.toneMapping = THREE.ACESFilmicToneMapping
         // gl.outputEncoding = THREE.sRGBEncoding
       }}>
-      <AnimationContext cursor={<Cursor />} controls={<Controls clickOutside={clickOutside} />}>
+      {/* <AnimationContext cursor={<Cursor />} controls={<Controls clickOutside={clickOutside} />}> */}
         <Scene isMobile={isMobile} clickOutside={clickOutside} />
-      </AnimationContext>
+      {/* </AnimationContext> */}
     </Canvas>
   )
 }
